@@ -17,5 +17,3 @@ COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/build/ /app/
 RUN chown -R nginx:nginx /app
 RUN chmod -R 755 /app
-EXPOSE 80
-ENV PORT 80
