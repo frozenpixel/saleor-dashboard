@@ -15,5 +15,3 @@ FROM nginx:stable
 WORKDIR /app
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/build/ /app/
-RUN chown -R nginx:nginx /app
-RUN chmod -R 755 /app
