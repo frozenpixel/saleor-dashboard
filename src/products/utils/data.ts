@@ -3,7 +3,9 @@ import { AttributeInput } from "@saleor/components/Attributes";
 import { MetadataFormData } from "@saleor/components/Metadata/types";
 import { MultiAutocompleteChoiceType } from "@saleor/components/MultiAutocompleteSelectField";
 import { SingleAutocompleteChoiceType } from "@saleor/components/SingleAutocompleteSelectField";
+import { FileUpload } from "@saleor/files/types/FileUpload";
 import { ProductVariant } from "@saleor/fragments/types/ProductVariant";
+import { UploadErrorFragment } from "@saleor/fragments/types/UploadErrorFragment";
 import { FormsetAtomicData, FormsetData } from "@saleor/hooks/useFormset";
 import { maybe } from "@saleor/misc";
 import {
@@ -12,8 +14,9 @@ import {
   ProductDetails_product_variants
 } from "@saleor/products/types/ProductDetails";
 import { SearchProductTypes_search_edges_node_productAttributes } from "@saleor/searches/types/SearchProductTypes";
-import { StockInput } from "@saleor/types/globalTypes";
+import { AttributeValueInput, StockInput } from "@saleor/types/globalTypes";
 import { mapMetadataItemToInput } from "@saleor/utils/maps";
+import { MutationFetchResult } from "react-apollo";
 
 import { ProductStockInput } from "../components/ProductStocks";
 import { ProductVariantCreateData_product } from "../types/ProductVariantCreateData";
@@ -252,3 +255,27 @@ export function mapFormsetStockToStockInput(
     warehouse: stock.id
   };
 }
+
+export const mergeFileUploadErrors = (
+  uploadFilesResult: Array<MutationFetchResult<FileUpload>>
+): UploadErrorFragment[] =>
+  uploadFilesResult.reduce((errors, uploadFileResult) => {
+    const uploadErrors = uploadFileResult.data.fileUpload.uploadErrors;
+    if (uploadErrors) {
+      return [...errors, ...uploadErrors];
+    }
+  }, []);
+
+export const mergeAttributesWithFileUploadResult = (
+  attributesWithNewFileValue: FormsetData<null, File>,
+  uploadFilesResult: Array<MutationFetchResult<FileUpload>>
+): AttributeValueInput[] =>
+  uploadFilesResult.map((uploadFileResult, index) => {
+    const attribute = attributesWithNewFileValue[index];
+
+    return {
+      file: uploadFileResult.data.fileUpload.uploadedFile.url,
+      id: attribute.id,
+      values: []
+    };
+  }, []);
