@@ -4,10 +4,11 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
 import CardTitle from "@saleor/components/CardTitle";
 import Grid from "@saleor/components/Grid";
+import { ProductErrorFragment } from "@saleor/fragments/types/ProductErrorFragment";
 import { getFormErrors, getProductErrorMessage } from "@saleor/utils/errors";
+import createNonNegativeValueChangeHandler from "@saleor/utils/handlers/nonNegativeValueChangeHandler";
 import React from "react";
 import { useIntl } from "react-intl";
-import { ProductErrorFragment } from "@saleor/attributes/types/ProductErrorFragment";
 
 interface ProductShippingProps {
   data: {
@@ -25,6 +26,7 @@ const ProductShipping: React.FC<ProductShippingProps> = props => {
   const intl = useIntl();
 
   const formErrors = getFormErrors(["weight"], errors);
+  const handleChange = createNonNegativeValueChangeHandler(onChange);
 
   return (
     <Card>
@@ -46,10 +48,12 @@ const ProductShipping: React.FC<ProductShippingProps> = props => {
             helperText={getProductErrorMessage(formErrors.weight, intl)}
             name="weight"
             value={data.weight}
-            onChange={onChange}
+            onChange={handleChange}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">{weightUnit}</InputAdornment>
+                <InputAdornment position="end">
+                  {weightUnit || ""}
+                </InputAdornment>
               ),
               inputProps: {
                 min: 0

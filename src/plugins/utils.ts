@@ -1,4 +1,5 @@
 import { ConfigurationTypeFieldEnum } from "@saleor/types/globalTypes";
+
 import { Plugin_plugin_configuration } from "./types/Plugin";
 
 export function isSecretField(
@@ -7,6 +8,7 @@ export function isSecretField(
 ) {
   return [
     ConfigurationTypeFieldEnum.PASSWORD,
-    ConfigurationTypeFieldEnum.SECRET
+    ConfigurationTypeFieldEnum.SECRET,
+    ConfigurationTypeFieldEnum.SECRETMULTILINE
   ].includes(config.find(configField => configField.name === field).type);
 }
