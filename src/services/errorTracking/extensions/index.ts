@@ -1,0 +1,1 @@
+export { SentryExtension } from "./Sentry";
